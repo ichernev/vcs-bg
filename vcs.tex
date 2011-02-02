@@ -284,6 +284,85 @@
   \subsection{Архитектура на централизираните системи}
     \subsubsection{Архитектура на CVS}
     \subsubsection{Архитектура на Subversion}
+    
+    Apache Subversion (или само SVN по името на командата svn) е система за контрол на версиите създадена с цел да бъде силно подобна на CVS, поправяйки грешките и имплементирайки някои липсващи нейни функционалности. Използва се широко в средите почитащи отворения код. Сред примерите са Apache Software Foundation, FreeBSD, GCC, Django, Ruby, Tigris.org, PHP, Python и MediaWiki. Google Code и SourceForge предоставят Subversion хостинг за проекти с отворен код.
+
+    Функционалности, които го правят предпочитан пред CVS:
+    \begin{itemize}
+      \item \texttt{Атомарни commit'и} - В смисъла на транзакциите. Или цялото множество от промени се регистрира, или абсолютно нищо.
+      \item \texttt{Пълна история} на преименовани, копирани или преместени файлове и директории.
+      \item \texttt{Метаданни} - Може да се съхранява информация за файлове и директории под формата на двойки ключ - стойност.
+      \item \texttt{Двоични файлове} - Съхранението им е ефективно, като от ревизия до ревизия се пази само binary-diff.
+      \item \texttt{Branching} e евтина операция независеща от размера на файловете. Механизмът е подобен на хард-линковете в UNIX.
+      \item \texttt{Обмен на малко информация} - Протоколът между клиента и сървъра изпраща само diff'ове на файловете в двете посоки.
+      \item \texttt{Резултатите} са удобни за парсене. Има възможност за получаване на лог във вид на XML.
+      \item \texttt{Конфликти} - За да се избегне необходимостта от разрешаване на конфликти, файловете могат да се заключват. Така програмистът си запазва ексклузивното право само той да ги редактира (reserved checkout).
+      %\item Path-based authorization.
+      \item \texttt{Интеграция} - SVN е написан на C, но поддържа интеграция също със C\#, PHP, Python, Perl, Ruby и Java.
+    \end{itemize}
+
+    \paragraph{Архитектура}
+    Моделът е клиент-сървър, дизайнът на библиотеките е слоест.
+
+    \includegraphics[scale=0.5]{svn_architecture}
+
+    В долната част на схемата се намира SVN repository \textsuperscript{то} което съдържа всички данни, които са регистрирани за контрол на версиите. В горната част е представена клиентската програма която управялва локалните копия на тези данни (наречени работни копия). Помежду им са множество маршрути през различни слоеве за достъп до repository. Някои от тях минават през мрежата и през сървъри, които от своя страна достъпват repo \textsuperscript{то}. Други заобикалят мрежата и директно достъпват repository \textsuperscript{то}. 
+
+    \paragraph{Видове хранилища}
+
+    \begin{itemize}
+      \item \texttt{Berkeley DB}
+      \item \texttt{FSFS} - Предпочитаният метод за съхраниение на данните, тъй като работи по-бързо и заема по-малко място на диска.
+    \end{itemize}
+
+    \paragraph{Достъп до хранилищата}
+
+    \begin{itemize}
+      \item \texttt{Местна или мрежова файлова система} - Използва протокола file:///path.
+      \item \texttt{WebDAV / Delta-V} - Чрез модула mod\_dav\_svn за Apache. Протоколът е http(s).
+      \item \texttt{Специализиран svn протокол} - Предава обикновен текст (svn://host/path) или криптиран през ssh (svn+ssh://host/path).
+    \end{itemize}
+
+    \paragraph{Клиенти}
+
+    \begin{itemize}
+      \item В командния ред
+        \begin{itemize}
+          \item Subversion предоставя собствен клиент за командния ред.
+        \end{itemize}
+      \item В мениджъра на прозорците
+        \begin{itemize}
+          \item TortoiseSVN е разширение на Windows shell\textsuperscript{а} което информира за състянието на файловете в revision системата като модифицира иконите в Windows Explorer.
+          \item SmartSVN работи на подобен принцип.
+        \end{itemize}
+      \item Интегрирани в средата за разработване на код
+        \begin{itemize}
+          \item AnkhSVN е предвидена за ползване с Microsoft Visual Studio.
+          \item Subclipse, Subversive работят заедно с Eclipse.
+          \item Xcode е редактор, включен в Mac OS X 10.5 (Leopard), поддържащ SVN.
+        \end{itemize}
+      \item Уеб-базирани
+        \begin{itemize}
+          \item Trac - вдъхновена е от CVSTrac и първоначално е наречена ``svntrac'' заради интеграцията си със Subversion.
+        \end{itemize}
+    \end{itemize}
+
+    \paragraph{Слоеве}
+
+    \begin{itemize}
+      \item \texttt{Файлова система} - Това е най-ниското ниво на което се съхраняват потребителските данни.
+    The lowest level; it implements the versioned filesystem which stores the user data.
+      \item \texttt{Хранилища} - Контролира скриптовете които изпълняват действията по контрол на версиите. Тези два слоя заедно съставялват интерфейса на файловата система.
+      \item \texttt{mod\_dav\_svn} - Осигурява WebDAV / Delta-V достъп чрез Apache 2.
+      \item \texttt{Достъп до хранилището} - Този слой контролира както местния така и отдалечения достъп. На това ниво към хранилищата се обръщаме чрез URL:
+        \begin{itemize}
+          \item \texttt{местен достъп}: file:///path/
+          \item \texttt{WebDAV}: http://host/path/; https://host/path/
+          \item \texttt{протокол SVN}: svn://host/path/; svn+ssh://host/path/
+        \end{itemize}
+      \item \texttt{Клиент, Работно копие на проекта} - Най-високото ниво абстрахира достъпа до кранилището и предоставя интерфейс за общи клиентски задачи като автентикация на потребители и сравнение на версии.
+    \end{itemize}
+
   \subsection{Архитектура на дистрибутираните системи}
     \subsubsection{Архитектура на Mercurial}
     \subsubsection{Архитектура на Git}
