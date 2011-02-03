@@ -111,11 +111,8 @@
 % VCS = Version Control Systems
 
 % Custom defines:
-\def\git{\texttt{git}}
+\def\git{\texttt{Git}}
 \def\SCM{SCM}
-% \def\js{\texttt{javascript}}
-% \def\jsg{JsGames}
-% \def\jsurl{http://iskren.info:50005/}
 
 % TODO remove colorlinks before printing
 \usepackage[unicode,colorlinks]{hyperref}   % this has to be the _last_ command in the preambule, or else - no work
@@ -131,8 +128,6 @@
 }
 \date{\today}
 \maketitle
-
-%\includegraphics[scale=0.1]{drop}
 
 \begin{abstract}
 Да запознае читателя с историята и развитието на системите за управление на код (\SCM). Ще бъдат сравнени централизираните и дистрибутираните системи както на високо ниво - предимства, недостатъци, сфери на приложение - така и на ниско ниво - обща архитектура, представяне на данните, използвани алгоритми и структури от данни. Ще бъде обърнато специално внимание на дистрибутираните системи за управление на код, тъй като те са по-нови като концепция и вече успешно заместват централизираните системи във все повече проекти, най-забележимо тези с отворен код, но също и в големи компании които по исторически причини използват централизирани системи (google, facebook).
@@ -275,7 +270,7 @@
   останали синхронизират с него. На практика се използва както централен
   клиент, така и синхронизиране на два нецентрални клиента, в зависимост от
   ситуацията. Най-видните примери за дистрибутирани системи за управление са
-  Git\cite{git} и Mercurial\cite{mercurial}. Те набират голяма популярност сред
+  \git\cite{git} и Mercurial\cite{mercurial}. Те набират голяма популярност сред
   опън сорс обществото, защото позволяват по естествен начин да се споделят
   промени направени от хора, който не се познават предварително и следователно
   няма как да споделят общ централен сървър.
@@ -324,12 +319,13 @@
       сигурност ще се случи, а поправянето става на ръка от администратора.
 
     \subsubsection{Архитектура на Subversion}
+    \includegraphics[scale=1.0]{svn_icon}
     
     Apache Subversion (или само SVN по името на командата svn) е система за контрол на версиите създадена с цел да бъде силно подобна на CVS, поправяйки грешките и имплементирайки някои липсващи нейни функционалности. Използва се широко в средите почитащи отворения код. Сред примерите са Apache Software Foundation, FreeBSD, GCC, Django, Ruby, Tigris.org, PHP, Python и MediaWiki. Google Code и SourceForge предоставят Subversion хостинг за проекти с отворен код.
 
     Функционалности, които го правят предпочитан пред CVS:
     \begin{itemize}
-      \item \texttt{Атомарни commit'и} - В смисъла на транзакциите. Или цялото множество от промени се регистрира, или абсолютно нищо.
+      \item \texttt{Атомарни commit-и} - В смисъла на транзакциите. Или цялото множество от промени се регистрира, или абсолютно нищо.
       \item \texttt{Пълна история} на преименовани, копирани или преместени файлове и директории.
       \item \texttt{Метаданни} - Може да се съхранява информация за файлове и директории под формата на двойки ключ - стойност.
       \item \texttt{Двоични файлове} - Съхранението им е ефективно, като от ревизия до ревизия се пази само binary-diff.
@@ -346,7 +342,7 @@
 
     \includegraphics[scale=0.5]{svn_architecture}
 
-    В долната част на схемата се намира SVN repository \textsuperscript{то} което съдържа всички данни, които са регистрирани за контрол на версиите. В горната част е представена клиентската програма която управялва локалните копия на тези данни (наречени работни копия). Помежду им са множество маршрути през различни слоеве за достъп до repository. Някои от тях минават през мрежата и през сървъри, които от своя страна достъпват repo \textsuperscript{то}. Други заобикалят мрежата и директно достъпват repository \textsuperscript{то}. 
+    В долната част на схемата се намира SVN repository-то което съдържа всички данни, които са регистрирани за контрол на версиите. В горната част е представена клиентската програма която управялва локалните копия на тези данни (наречени работни копия). Помежду им са множество маршрути през различни слоеве за достъп до repository. Някои от тях минават през мрежата и през сървъри, които от своя страна достъпват repo-то. Други заобикалят мрежата и директно достъпват repository-то.
 
     \paragraph{Видове хранилища}
 
@@ -372,7 +368,7 @@
         \end{itemize}
       \item В мениджъра на прозорците
         \begin{itemize}
-          \item TortoiseSVN е разширение на Windows shell\textsuperscript{а} което информира за състянието на файловете в revision системата като модифицира иконите в Windows Explorer.
+          \item TortoiseSVN е разширение на Windows shell което информира за състянието на файловете в revision системата като модифицира иконите в Windows Explorer.
           \item SmartSVN работи на подобен принцип.
         \end{itemize}
       \item Интегрирани в средата за разработване на код
@@ -391,8 +387,7 @@
 
     \begin{itemize}
       \item \texttt{Файлова система} - Това е най-ниското ниво на което се съхраняват потребителските данни.
-    The lowest level; it implements the versioned filesystem which stores the user data.
-      \item \texttt{Хранилища} - Контролира скриптовете които изпълняват действията по контрол на версиите. Тези два слоя заедно съставялват интерфейса на файловата система.
+      \item \texttt{Хранилище} - Контролира скриптовете които изпълняват действията по контрол на версиите. Тези два слоя заедно съставляват интерфейса на файловата система.
       \item \texttt{mod\_dav\_svn} - Осигурява WebDAV / Delta-V достъп чрез Apache 2.
       \item \texttt{Достъп до хранилището} - Този слой контролира както местния така и отдалечения достъп. На това ниво към хранилищата се обръщаме чрез URL:
         \begin{itemize}
@@ -404,14 +399,92 @@
     \end{itemize}
 
   \subsection{Архитектура на дистрибутираните системи}
+
     \subsubsection{Архитектура на Mercurial}
-    \subsubsection{Архитектура на Git}
+    \includegraphics[scale=1.0]{hg_icon}
+
+    \subsubsection{Архитектура на \git}
+    \includegraphics[scale=1.0]{git_icon}
+
+    Git is a distributed revision control system with an emphasis on speed. Git was initially designed and developed by Linus Torvalds for Linux kernel development.
+    Every Git working directory is a full-fledged repository with complete history and full revision tracking capabilities, not dependent on network access or a central server.
+    a distributed system that he could use like BitKeeper
+    design criteria:
+    Take CVS as an example of what not to do; if in doubt, make the exact opposite decision. To quote Torvalds, speaking somewhat tongue-in-cheek:
+    "For the first 10 years of kernel maintenance, we literally used tarballs and patches, which is a much superior source control management system than CVS is, but I did end up using CVS for 7 years at a commercial company [Transmeta[9]] and I hate it with a passion. When I say I hate CVS with a passion, I have to also say that if there are any SVN (Subversion) users in the audience, you might want to leave. Because my hatred of CVS has meant that I see Subversion as being the most pointless project ever started. The slogan of Subversion for a while was "CVS done right", or something like that, and if you start with that kind of slogan, there's nowhere you can go. There is no way to do CVS right."[10]
+    Support a distributed, BitKeeper-like workflow
+    "BitKeeper was not only the first source control system that I ever felt was worth using at all, it was also the source control system that taught me why there's a point to them, and how you actually can do things. So Git in many ways, even though from a technical angle it is very very different from BitKeeper (which was another design goal, because I wanted to make it clear that it wasn't a BitKeeper clone), a lot of the flows we use with Git come directly from the flows we learned from BitKeeper."[10]
+    Very strong safeguards against corruption, either accidental or malicious[10][11]
+    Very high performance
+  
+    \paragraph{Дизайн}
+
+    Вдъхновен от BitKeeper и Monotone, \git e бил предвиден за енджин за система за контрол на версиите на ниско ниво. Над него други щели да надграждат front-end. Проектът обаче се развил дотолкова, че е напълно функционален и за директна употреба. Създателят на \git Линус Торвалдс има широки познания върху работата на файловите системи и опит с поддръжката на голям разпределен проект какъвто е операционната система Линукс. Това предопределя следните решения:
+
+    \begin{itemize}
+      \item \texttt{Разпределена разработка} -- \git предоставя на всеки разработчик местно копие на цялата база.
+      \item \texttt{Ефективност при работа с големи проекти} --
+      \item \texttt{Сериозна поддръжка при не-линейна разработка} --
+      \item \texttt{Съвместимост с протоколи и системи} --
+      \item \texttt{Стратегиите за сливане са лесно заменими} --
+      \item \texttt{Криптографска автентикация на историята} --
+      \item \textttМодулен дизайн{} --
+    \end{itemize}
+    Strong support for non-linear development
+    Git supports rapid branching and merging, and includes specific tools for visualizing and navigating a non-linear development history. A core assumption in Git is that a change will be merged more often than it is written, as it is passed around various reviewers.
+    Distributed development
+    Like Darcs, BitKeeper, Mercurial, SVK, Bazaar and Monotone, Git gives each developer a local copy of the entire development history, and changes are copied from one such repository to another. These changes are imported as additional development branches, and can be merged in the same way as a locally developed branch.
+    Compatibility with existing systems/protocols
+    Repositories can be published via HTTP, FTP, rsync, or a Git protocol over either a plain socket or ssh. Git also has a CVS server emulation, which enables the use of existing CVS clients and IDE plugins to access Git repositories. Subversion and svk repositories can be used directly with git-svn.
+    Efficient handling of large projects
+    Torvalds has described Git as being very fast and scalable,[23] and performance tests done by Mozilla showed it was an order of magnitude faster than some revision control systems, and fetching revision history from a locally stored repository can be two orders of magnitude faster than fetching it from the remote server.[24][25] In particular, Git does not get slower as the project history grows larger.[26]
+    Cryptographic authentication of history
+    The Git history is stored in such a way that the name of a particular revision (a "commit" in Git terms) depends upon the complete development history leading up to that commit. Once it is published, it is not possible to change the old versions without it being noticed. The structure is similar to a hash tree, but with additional data at the nodes as well as the leaves.[27] (Mercurial and Monotone also have this property.)
+    Toolkit-based design
+    Git was designed as a set of programs written in C, and a number of shell scripts that provide wrappers around those programs.[28] Although most of those scripts have been rewritten in C as part of an ongoing effort to port it to Microsoft Windows[citation needed], the design remains, and it is easy to chain the components together.[29]
+    Pluggable merge strategies
+    As part of its toolkit design, Git has a well-defined model of an incomplete merge, and it has multiple algorithms for completing it, culminating in telling the user that it is unable to complete the merge automatically and manual editing is required.
+    Garbage accumulates unless collected
+    Aborting operations or backing out changes will leave useless dangling objects in the database. These are generally a small fraction of the continuously growing history of wanted objects, but space may be reclaimed using git gc --prune.[30]
+    Periodic explicit object packing
+    Git stores each newly created object as a separate file. Although individually compressed, this takes a great deal of space and is inefficient. This is solved by the use of "packs" that store a large number of objects in a single file (or network byte stream), delta-compressed among themselves. Packs are compressed using the heuristic that files with the same name are probably similar, but do not depend on it for correctness. Newly created objects (newly added history) are still stored singly, and periodic repacking is required to maintain space efficiency. Git does periodic repacking automatically but manual repacking is also possible with the git gc command.
 
 \section{Сравнение на функционално ниво}
   \subsection{Предимства на централизираните системи}
+
   \subsection{Недостатъци на централизираните системи}
+
   \subsection{Предимства на дистрибутираните системи}
+    \begin{itemize}
+      \item Позволяват ефективна работа дори когато потребителите не са свързани в мрежа.
+      \item Включването в проект е лесно - не изисква позволение за писане от привилегировани потребители.
+      \item Използването за лични проекти е лесно и удобно. Подходящо за началните фази на проект, когато потребителите все още нямат нищо готово за публикуване.
+      \item Не се създава единична централизирана контролираща система, която да създаде проблем в случай на срив. Всяко работно копие на базата може да служи за отдалечен backup на базата и историята на промените ѝ, намаляващо риска от загуба на данни.
+      \item Все пак се позволява централизиран контрол когато е необходимо да се издаде официална версия на проекта.
+      \item Повечето операции са много по-бързи отколкото в сентрализираните системи, тъй като не използват мрежата.
+    \end{itemize}
+
+    \paragraph{Отворени системи}
+      Дистрибутираните VCS са подходящи за използване от отворени системи заради:
+      \begin{itemize}
+        \item \texttt{независимите разклонения}
+        \item \texttt{лесното сливане на отдалечените хранилища}
+      \end{itemize}
+
+      При отворените системи:
+      \begin{itemize}
+        \item Всяко разклонение практически се имплементира като работно копие. Сливанията се извършват чрез размяна на patch-ове между отделните разклонения.
+        \item Програмистите имат по-голяма готовност да създават нови версии на проекта когато е необходимо. Всъщност работното копие на хранилището само по себе си е потенциална нова версия. Вслучай, че неразбирателствата се изгладят сливането на кода в едно е лесно.
+        \item Възможно е да се вземат само отделни промени (cherry-picking) селектирани от различни потребители.
+        \item Не е задължително да съществува оригинално, отправно и единствено вярно копие на базата с код. Вместо това съществуват множество работни копия. В този смисъл е лесно да се създадат и множество ``централни'' хранилища.
+        \item Код от отделните хранилища се слива на базата на т.нар. ``мрежа на доверието'' (web of trust). Исторически е доказано, че това подобрява качеството на кода.
+      \end{itemize}
+
   \subsection{Недостатъци на дистрибутираните системи}
+    \begin{itemize}
+      \item Първоначалното клониране на хранилището на локалната машина е по-бавно в сравнение с централизираните системи, тъй като се копират всички разклонения с цялата им история.
+      \item Липсват механизми за заключване, каквито традиционно са част от централизираните системи. Това е важно при двоични файлове, които не подлежат на сливане, например изображения.
+    \end{itemize}
 
 \section{Заключение}
 
@@ -419,15 +492,13 @@
 \newpage
 
 \begin{thebibliography}{99}
-  \bibitem{foo} \url{http://example.com/}
   \bibitem{sccs} \url{http://sccs.berlios.de/}
   \bibitem{rcs} \url{http://www.gnu.org/software/rcs/}
   \bibitem{cvs} \url{http://savannah.nongnu.org/projects/cvs}
   \bibitem{svn} \url{http://subversion.apache.org/}
   \bibitem{git} \url{http://git-scm.com/}
   \bibitem{mercurial} \url{http://mercurial.selenic.com/}
-  \bibitem{git-bottom-up}
-  \url{http://ftp.newartisans.com/pub/git.from.bottom.up.pdf}
+  \bibitem{git-bottom-up} \url{http://ftp.newartisans.com/pub/git.from.bottom.up.pdf}
 \end{thebibliography}
 
 \end{document}
