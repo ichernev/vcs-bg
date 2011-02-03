@@ -111,8 +111,8 @@
 % VCS = Version Control Systems
 
 % Custom defines:
-\def\git{\texttt{Git}}
 \def\Hg{Mercurial}
+\def\git{\texttt{Git}\ }
 \def\SCM{SCM}
 
 % TODO remove colorlinks before printing
@@ -277,6 +277,18 @@
   няма как да споделят общ централен сървър.
 
 \section{Сравнение на архитектурно ниво}
+
+  \paragraph{Модел за едновременен достъп}
+  Описва как в случай на едновременна редакция на файлове се избягва въвездането в хранилището на неверни данни.
+  \begin{itemize}
+    \item \texttt{Схема със заключване} -- Промени не са позволени докато потребителят не поиска и получи изключителните права над файла от основното хранилище. Файлът е заключен докато трае текущата редакция.
+    \item \texttt{Схема със сливане} -- Потребителите са свободни да редактират всички файлове, но при опит да добавят промените си в хранилището са информирани за евентуалните конфликти. В такъв случай системата за контрол на версиите може да разреши конфликта или ако не успее да остави потребителят сам да го разреши.
+  \end{itemize}
+  Разпределените системи почти винаги предполагат моделa със сливане.
+
+
+
+
   \subsection{Архитектура на централизираните системи}
     \subsubsection{Архитектура на CVS}
 
@@ -538,48 +550,41 @@
     \subsubsection{Архитектура на \git}
     \includegraphics[scale=1.0]{git_icon}
 
-    Git is a distributed revision control system with an emphasis on speed. Git was initially designed and developed by Linus Torvalds for Linux kernel development.
-    Every Git working directory is a full-fledged repository with complete history and full revision tracking capabilities, not dependent on network access or a central server.
-    a distributed system that he could use like BitKeeper
-    design criteria:
-    Take CVS as an example of what not to do; if in doubt, make the exact opposite decision. To quote Torvalds, speaking somewhat tongue-in-cheek:
-    "For the first 10 years of kernel maintenance, we literally used tarballs and patches, which is a much superior source control management system than CVS is, but I did end up using CVS for 7 years at a commercial company [Transmeta[9]] and I hate it with a passion. When I say I hate CVS with a passion, I have to also say that if there are any SVN (Subversion) users in the audience, you might want to leave. Because my hatred of CVS has meant that I see Subversion as being the most pointless project ever started. The slogan of Subversion for a while was "CVS done right", or something like that, and if you start with that kind of slogan, there's nowhere you can go. There is no way to do CVS right."[10]
-    Support a distributed, BitKeeper-like workflow
-    "BitKeeper was not only the first source control system that I ever felt was worth using at all, it was also the source control system that taught me why there's a point to them, and how you actually can do things. So Git in many ways, even though from a technical angle it is very very different from BitKeeper (which was another design goal, because I wanted to make it clear that it wasn't a BitKeeper clone), a lot of the flows we use with Git come directly from the flows we learned from BitKeeper."[10]
-    Very strong safeguards against corruption, either accidental or malicious[10][11]
-    Very high performance
+    \git е създадена от Линус Торвалдс за целите на разработването на ядрото на операционната система Линукс. При писането ѝ се е обърнало специално внимание на скоростта и лесното включване на код от много участници в проекта. Всяка работна директория в \git е пълноправно хранилище с пълна история и възможности за преглеждането ѝ и независима от мрежови достъп до централен сървър.
   
     \paragraph{Дизайн}
 
-    Вдъхновен от BitKeeper и Monotone, \git e бил предвиден за енджин за система за контрол на версиите на ниско ниво. Над него други щели да надграждат front-end. Проектът обаче се развил дотолкова, че е напълно функционален и за директна употреба. Създателят на \git Линус Торвалдс има широки познания върху работата на файловите системи и опит с поддръжката на голям разпределен проект какъвто е операционната система Линукс. Това предопределя следните решения:
+    Вдъхновен от BitKeeper и Monotone, \git e бил замислен като енджин за система за контрол на версиите на ниско ниво. Над него други щели да надграждат front-end. Проектът обаче се развил дотолкова, че е напълно функционален и за директна употреба. Създателят на \git Линус Торвалдс има широки познания върху работата на файловите системи и опит с поддръжката на голям разпределен проект какъвто е операционната система Линукс. Това предопределя следните решения:
 
     \begin{itemize}
-      \item \texttt{Разпределена разработка} --- \git предоставя на всеки разработчик местно копие на цялата база.
-      \item \texttt{Ефективност при работа с големи проекти} ---
-      \item \texttt{Сериозна поддръжка при не-линейна разработка} ---
-      \item \texttt{Съвместимост с протоколи и системи} ---
-      \item \texttt{Стратегиите за сливане са лесно заменими} ---
-      \item \texttt{Криптографска автентикация на историята} ---
-      \item \texttt{Модулен дизайн} ---
+      \item \texttt{Разпределена разработка} -- \git предоставя на всеки разработчик местно копие на цялата база. Промените се включват от едно хранилище в друго като нови разклонения, които могат да бъдат слени по същия начин като местните разклонения.
+      \item \texttt{Ефективност при работа с големи проекти} -- По думите на създателя си \git е бърз и скалируем. Тестове проведени от Mozilla доказват, че е в пъти по-бърз от повечето системи за контрол на версиите, а достъпът до историята на ревизиите от местното хранилище е 2 пъти по-бърз отколкото от отдалечен сървър. \git не става по-бавен с увеличаването на базата от код или акумулираната история на ревизиите.
+      \item \texttt{Сериозна поддръжка при не-линейна разработка} -- Важно допускане при дизайна на \git е, че една промяна по-често ще бъде включвана към проектите на участниците отколкото редактирана. Системата поддържа бързо разклоняване и сливане на код и предоставя инструменти за визуализиране и управление на сложна история на разработка.
+      \item \texttt{Съвместимост с протоколи и системи}
+        Медия
+        \begin{itemize}
+          \item \texttt{ssh}
+          \item \texttt{sockets}
+        \end{itemize}
+        Протоколи
+        \begin{itemize}
+          \item \texttt{http}
+          \item \texttt{ftp}
+          \item \texttt{git}
+          \item \texttt{rsync}
+        \end{itemize}
+        Други системи
+        \begin{itemize}
+          \item \texttt{cvs} \git има възможност за емулиране на CVS сървър и позволява достъпа до хранилища чрез съществуващи cvs клиенти и плъгини за среди за разработка.
+          \item \texttt{svn} Съществуващи subversion хранилища могат да се достъпват с командата git-svn.
+        \end{itemize}
+      \item \texttt{Криптографска автентикация на историята} -- Името на всеки commit зависи от пълната история довела до него. Веднъж направен commit-а не е възможно промяна да не се отрази на криптографския хеш, а следователно и на името на ревизията. В този смисъл промените по \git са immutable.
+      \item \texttt{Модулен дизайн} -- \git е създаден като множество програми на C, свързани с shell скриптове - wrapper-и около тези програми. Макар и сега повечето от скриптовете да са пренаписани на С като част от усилието да се направи \git напълно функционален под Windows, дизайнът е останал, което прави лесно навръзването и замяната на отделни компоненти.
+      \item \texttt{Стратегиите за сливане са лесно заменими} -- Като част от модулния дизайн, \git ясно дефинира незавършено сливане и има множество алгоритми за справяне с него. В случай на невъзможност да се слеят програматично промените е необходима ръчна редакция от страна на потребителя.
+      \item \texttt{BitKeeper като модел} -- Използваната в първите години на разработване на Линукс ядрото система е модел за интерфейса и потока на действия в \git. Технически двете са много различни, което е била една от целите които създателят на \git си е поставил за да бъде очевидно, че макар и създаден да го замести, \git не е копие на BitKeeper.
+      \item \texttt{CVS като анти-модел} -- Централизираната система се оказва неприложима за целите на Линус.
+      \item \texttt{Сигурност} -- Гаранции срещу повреда на данните, била тя случайна или злонамерена.
     \end{itemize}
-    Strong support for non-linear development
-    Git supports rapid branching and merging, and includes specific tools for visualizing and navigating a non-linear development history. A core assumption in Git is that a change will be merged more often than it is written, as it is passed around various reviewers.
-    Distributed development
-    Like Darcs, BitKeeper, Mercurial, SVK, Bazaar and Monotone, Git gives each developer a local copy of the entire development history, and changes are copied from one such repository to another. These changes are imported as additional development branches, and can be merged in the same way as a locally developed branch.
-    Compatibility with existing systems/protocols
-    Repositories can be published via HTTP, FTP, rsync, or a Git protocol over either a plain socket or ssh. Git also has a CVS server emulation, which enables the use of existing CVS clients and IDE plugins to access Git repositories. Subversion and svk repositories can be used directly with git-svn.
-    Efficient handling of large projects
-    Torvalds has described Git as being very fast and scalable,[23] and performance tests done by Mozilla showed it was an order of magnitude faster than some revision control systems, and fetching revision history from a locally stored repository can be two orders of magnitude faster than fetching it from the remote server.[24][25] In particular, Git does not get slower as the project history grows larger.[26]
-    Cryptographic authentication of history
-    The Git history is stored in such a way that the name of a particular revision (a "commit" in Git terms) depends upon the complete development history leading up to that commit. Once it is published, it is not possible to change the old versions without it being noticed. The structure is similar to a hash tree, but with additional data at the nodes as well as the leaves.[27] (Mercurial and Monotone also have this property.)
-    Toolkit-based design
-    Git was designed as a set of programs written in C, and a number of shell scripts that provide wrappers around those programs.[28] Although most of those scripts have been rewritten in C as part of an ongoing effort to port it to Microsoft Windows[citation needed], the design remains, and it is easy to chain the components together.[29]
-    Pluggable merge strategies
-    As part of its toolkit design, Git has a well-defined model of an incomplete merge, and it has multiple algorithms for completing it, culminating in telling the user that it is unable to complete the merge automatically and manual editing is required.
-    Garbage accumulates unless collected
-    Aborting operations or backing out changes will leave useless dangling objects in the database. These are generally a small fraction of the continuously growing history of wanted objects, but space may be reclaimed using git gc ---prune.[30]
-    Periodic explicit object packing
-    Git stores each newly created object as a separate file. Although individually compressed, this takes a great deal of space and is inefficient. This is solved by the use of "packs" that store a large number of objects in a single file (or network byte stream), delta-compressed among themselves. Packs are compressed using the heuristic that files with the same name are probably similar, but do not depend on it for correctness. Newly created objects (newly added history) are still stored singly, and periodic repacking is required to maintain space efficiency. Git does periodic repacking automatically but manual repacking is also possible with the git gc command.
 
 \section{Сравнение на функционално ниво}
   \subsection{Предимства на централизираните системи}
